@@ -81,6 +81,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
     private boolean 生效问题处理(int i){
         ShellUtils su=new ShellUtils();
         //ShellUtils.CommandResult Result=new ShellUtils.CommandResult();
+        Log.e("测试","OK");
         String str="am kill";
         String str_0="pm disable";
         String str_1="pm enable";
