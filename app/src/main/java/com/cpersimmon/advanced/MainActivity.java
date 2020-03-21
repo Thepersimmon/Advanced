@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         layout= findViewById(R.id.layout);
         List<String> valueList = new ArrayList<>();
         valueList.add("授权管理：去除权限");
+        valueList.add("谷歌冻结");
         List<Integer> resIdList = new ArrayList<>();
+        resIdList.add(R.mipmap.ic_launcher);
         resIdList.add(R.mipmap.ic_launcher);
         layout.setValueList(valueList) // 文字 list
                 .setResIdList(resIdList) // icon list
