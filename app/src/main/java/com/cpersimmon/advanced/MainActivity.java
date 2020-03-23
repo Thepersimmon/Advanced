@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<Integer> resIdList = new ArrayList<>();
         resIdList.add(R.mipmap.ic_launcher);
         resIdList.add(R.mipmap.ic_launcher);
-        Log.e("","");
         layout.setValueList(valueList) // 文字 list
                 .setResIdList(resIdList) // icon list
                 .setArrowResId(R.drawable.right_arrow_black)// 右边的箭头
