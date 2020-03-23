@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         valueList.add("谷歌冻结");
         List<Integer> resIdList = new ArrayList<>();
         resIdList.add(R.mipmap.ic_launcher);
-        resIdList.add(R.mipmap.ic_launcher);
+        resIdList.add(R.drawable.google_0);
         layout.setValueList(valueList) // 文字 list
                 .setResIdList(resIdList) // icon list
                 .setArrowResId(R.drawable.right_arrow_black)// 右边的箭头
@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (position){
                     case 0:
                         Intent intent = new Intent   (MainActivity.this,AuthManager.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent = new Intent   (MainActivity.this,GoogleFreeze.class);
                         startActivity(intent);
                         break;
                 }

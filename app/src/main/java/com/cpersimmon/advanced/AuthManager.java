@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.cpersimmon.advanced.Utils.ShellUtils;
+import com.cpersimmon.advanced.Utils.shellUtils;
 
 import static com.cpersimmon.advanced.Utils.toWork.tryCreate;
 import static com.cpersimmon.advanced.Utils.toWork.tryDelete;
@@ -79,8 +79,8 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         }
     }
     private boolean 生效问题处理(int i){
-        ShellUtils su=new ShellUtils();
-        //ShellUtils.CommandResult Result=new ShellUtils.CommandResult();
+        shellUtils su=new shellUtils();
+        //shellUtils.CommandResult Result=new shellUtils.CommandResult();
         Log.e("测试","OK");
         String str="am kill";
         String str_0="pm disable";
@@ -90,7 +90,8 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         String str3="com.lbe.security.miui";
         String s1=str+str1+str2;
         switch (i){
-            case 1:ShellUtils.CommandResult Result1=su.execCommand(s1,true,true);
+            case 1:
+                shellUtils.CommandResult Result1=su.execCommand(s1,true,true);
 
                 return (Result1.result==0);
             case 2:
@@ -98,7 +99,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
                 if(b){
                     tryDelete("403");
                 }
-                ShellUtils.CommandResult Result2=su.execCommand(str_0+str1+str3+"\n"+str_1+str1+str3,true,true);
+                shellUtils.CommandResult Result2=su.execCommand(str_0+str1+str3+"\n"+str_1+str1+str3,true,true);
                 //su.execCommand(str_1+str1+str3,true,true);
                 if(b){
                     tryCreate("403");
@@ -107,15 +108,15 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
             default:
                 return false;
         }
-        //ShellUtils.CommandResult Result=su.execCommand("pm enable com.x7890.shortcutcreator",true,true);
+        //shellUtils.CommandResult Result=su.execCommand("pm enable com.x7890.shortcutcreator",true,true);
         /*
-        ShellUtils.CommandResult Result=su.execCommand(s1,true,true);
+        shellUtils.CommandResult Result=su.execCommand(s1,true,true);
         try {
             Thread.sleep(100);
         }catch (Exception e){
             Log.e("重要",e.toString());
         }
-        ShellUtils.CommandResult Result1=su.execCommand(s2,true,true);
+        shellUtils.CommandResult Result1=su.execCommand(s2,true,true);
         Log.e("重要信息1",String.valueOf(Result1.result));
         Log.e("重要信息2",Result1.errorMsg);
         Log.e("重要信息3",Result1.successMsg);

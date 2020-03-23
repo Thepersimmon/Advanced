@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class ShellUtils {
+public class shellUtils {
 
 
     public static final String COMMAND_SU = "su";
@@ -15,7 +15,7 @@ public class ShellUtils {
     public static final String COMMAND_LINE_END = "\n";
 
     //这一段看个人情况，我不需要
-    /*public ShellUtils() {
+    /*public shellUtils() {
         throw new AssertionError();
     }*/
 
@@ -38,7 +38,7 @@ public class ShellUtils {
      * @param
      * //运行是否需要root权限
      * @return
-     * @see ShellUtils#execCommand(String[], boolean, boolean)
+     * @see shellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(String command, boolean isRoot) {
         return execCommand(new String[] { command }, isRoot, true);
@@ -53,7 +53,7 @@ public class ShellUtils {
      * @param
      * //运行是否需要root权限
      * @return
-     * @see ShellUtils#execCommand(String[], boolean, boolean)
+     * @see shellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(List<String> commands,
                                             boolean isRoot) {
@@ -71,7 +71,7 @@ public class ShellUtils {
      * @param
      * //运行是否需要root权限
      * @return
-     * @see ShellUtils#execCommand(String[], boolean, boolean)
+     * @see shellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(String[] commands, boolean isRoot) {
         return execCommand(commands, isRoot, true);
@@ -88,7 +88,7 @@ public class ShellUtils {
      * @param isNeedResultMsg
      *            whether need result msg
      * @return
-     * @see ShellUtils#execCommand(String[], boolean, boolean)
+     * @see shellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(String command, boolean isRoot,
                                             boolean isNeedResultMsg) {
@@ -106,7 +106,7 @@ public class ShellUtils {
      * @param
      * //是否需要返回运行结果
      * @return
-     * @see ShellUtils#execCommand(String[], boolean, boolean)
+     * @see shellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(List<String> commands,
                                             boolean isRoot, boolean isNeedResultMsg) {

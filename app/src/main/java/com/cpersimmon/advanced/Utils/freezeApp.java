@@ -3,12 +3,14 @@ package com.cpersimmon.advanced.Utils;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+//import android.util.Log;
 
-public class FreezeApp extends AppCompatActivity {
+public class freezeApp extends AppCompatActivity {
     private Context ct_sc1;
     private int i_sc1;
     private String name_sc1;
-    public FreezeApp(Context ct_sc0){
+    public freezeApp(Context ct_sc0){
         ct_sc1=ct_sc0;
     }
     //0是解冻，1是冻结
@@ -39,6 +41,15 @@ public class FreezeApp extends AppCompatActivity {
 
         }catch (Exception e){
             return false;
+        }
+    }
+    public String findName(String pkg){
+        PackageManager pm=ct_sc1.getPackageManager();
+        try {
+            return pm.getApplicationLabel(pm.getApplicationInfo(pkg, PackageManager.GET_META_DATA)).toString();
+        }catch (Exception e){
+            Log.e("获取应用名称出错",e.toString());
+            return pkg;
         }
     }
 }
