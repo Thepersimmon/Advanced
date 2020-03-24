@@ -50,6 +50,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -58,6 +59,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onClick(View view){

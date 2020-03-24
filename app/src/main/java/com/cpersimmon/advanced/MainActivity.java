@@ -2,17 +2,20 @@ package com.cpersimmon.advanced;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cpersimmon.advanced.Utils.shellUtils;
 import com.maiml.library.BaseItemLayout;
 
 import java.util.ArrayList;
@@ -34,11 +37,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView name_305;
     TextView name_305_1;
     BaseItemLayout layout;
+    SharedPreferences settings;
+    Boolean shouldRestart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //settings = getSharedPreferences("data", 0);
+        //shouldRestart=settings.getBoolean("shouldRestart",true);
         checkPermission();
         说明(this);
         layout= findViewById(R.id.layout);
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<Integer> resIdList = new ArrayList<>();
         resIdList.add(R.mipmap.ic_launcher);
         resIdList.add(R.drawable.google_0);
+
         layout.setValueList(valueList) // 文字 list
                 .setResIdList(resIdList) // icon list
                 .setArrowResId(R.drawable.right_arrow_black)// 右边的箭头
@@ -93,12 +101,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        menu.add(0,0,0,"关于作者");
+        menu.add(1,1,1,"是否快速重启");
+        menu.getItem(1).setCheckable(true);
+        settings = getSharedPreferences("data", 0);
+        shouldRestart=settings.getBoolean("shouldRestart",false);
+        if(shouldRestart) {
+            //if(settings.getBoolean("shouldRestart",false))
+            menu.getItem(1).setChecked(true);
+        }
+        return true;
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences.Editor editor = settings.edit();
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
+            case 0:
+                Intent intent = new Intent   (MainActivity.this,About.class);
+                startActivity(intent);
+                break;
+            case 1:
+                if(!item.isChecked()){
+                    item.setChecked(true);
+                    Log.e("重要信息2","应打开");
+                    shouldRestart=true;
+                    editor.putBoolean("shouldRestart",true);
+                    editor.apply();
+                }
+                else {
+                    item.setChecked(false);
+                    Log.e("重要信息2","应关闭");
+                    shouldRestart=false;
+                    editor.putBoolean("shouldRestart",false);
+                    editor.apply();
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,6 +165,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.switch_305:
                 通用Switch点击操作(this,aSwitch_305,"305");
+                shellUtils su=new shellUtils();
+                if(shouldRestart) {
+                    su.execCommand("am restart", true, true);
+                }
                 break;
             case R.id.switch_401:
                 通用Switch点击操作(this,aSwitch_401,"401");
