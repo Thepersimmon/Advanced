@@ -18,10 +18,13 @@ import android.widget.Toast;
 import com.cpersimmon.advanced.Utils.shellUtils;
 import com.maiml.library.BaseItemLayout;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.cpersimmon.advanced.Utils.toWork.isExist;
+import static com.cpersimmon.advanced.Utils.toWork.tryCreate;
+import static com.cpersimmon.advanced.Utils.toWork.tryDelete;
 import static com.cpersimmon.advanced.Utils.toWork.说明;
 import static com.cpersimmon.advanced.Utils.toWork.通用Switch点击操作;
 
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Switch aSwitch_404;
     TextView name_305;
     TextView name_305_1;
+    TextView name_307_308;
+    Switch aSwitch_307_308;
     BaseItemLayout layout;
     SharedPreferences settings;
     Boolean shouldRestart;
@@ -92,9 +97,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         aSwitch_402=Switch初始化(R.id.switch_402,"402");
         aSwitch_403=Switch初始化(R.id.switch_403,"403");
         aSwitch_404=Switch初始化(R.id.switch_404,"404");
+        //
+        name_307_308=findViewById(R.id.text_1);
+        name_307_308.setText("framework:破解签名多/少文件");
+        aSwitch_307_308=findViewById(R.id.switch_1);
+        aSwitch_307_308.setChecked((!isExist("307"))&&(!isExist("308")));
+        aSwitch_307_308.setOnClickListener(this);
+        //
         name_305=findViewById(R.id.name_305);
         name_305_1=findViewById(R.id.name_305_1);
         name_305.setOnClickListener(this);
+        //系统权限修改设置特别篇
+        aSwitch_305.setClickable(false);
+        name_305.setText("framework.jar:系统权限(禁止修改)");
+        //
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
@@ -103,42 +119,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        menu.add(0,0,0,"关于作者");
-        menu.add(1,1,1,"是否快速重启");
-        menu.getItem(1).setCheckable(true);
+        getMenuInflater().inflate(R.menu.main_memu, menu);
+        menu.add(2,2,2,"允许修改系统权限");
+        menu.findItem(2).setCheckable(true);
+        menu.findItem(2).setChecked(false);
+        //MenuItem item=findViewById(R.id.menu_should_restart);
+        //menu.add(0,0,0,"关于作者");
+        //menu.add(1,1,1,"是否快速重启");
+        //menu.findItem(R.id.menu_root).setChecked(true);
+        //menu.findItem(R.id.menu_should_restart).setIcon(ContextCompat.getDrawable(this, R.drawable.main_should_restart));
+        //menu.findItem(R.id.menu_about).setIcon(ContextCompat.getDrawable(this, R.drawable.main_about));
+        menu.findItem(R.id.menu_should_restart).setCheckable(true);
+        //menu.getItem(0).setIcon(R.drawable.google_3ap);
         settings = getSharedPreferences("data", 0);
         shouldRestart=settings.getBoolean("shouldRestart",false);
-        if(shouldRestart) {
+        if(!shouldRestart) {
             //if(settings.getBoolean("shouldRestart",false))
-            menu.getItem(1).setChecked(true);
+            menu.findItem(R.id.menu_should_restart).setChecked(false);
+            Log.e("重要信息", "shouldRestart为假");
+        }
+        else {
+            Log.e("重要信息", "shouldRestart为真");
+            menu.findItem(R.id.menu_should_restart).setChecked(true);
         }
         return true;
     }
+    //
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+    //
+
     public boolean onOptionsItemSelected(MenuItem item) {
         SharedPreferences.Editor editor = settings.edit();
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
-            case 0:
+            case R.id.menu_about:
                 Intent intent = new Intent   (MainActivity.this,About.class);
                 startActivity(intent);
                 break;
-            case 1:
+            case R.id.menu_should_restart:
                 if(!item.isChecked()){
-                    item.setChecked(true);
                     Log.e("重要信息2","应打开");
                     shouldRestart=true;
+                    Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
+                    item.setChecked(true);
                     editor.putBoolean("shouldRestart",true);
                     editor.apply();
                 }
                 else {
-                    item.setChecked(false);
                     Log.e("重要信息2","应关闭");
                     shouldRestart=false;
+                    Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
+                    item.setChecked(false);
                     editor.putBoolean("shouldRestart",false);
                     editor.apply();
                 }
+                break;
+            case 2:
+                if(!item.isChecked()){
+                    aSwitch_305.setClickable(true);
+                    name_305.setText("framework.jar:系统权限(允许修改)");
+                    item.setChecked(true);
+                }
+                else {
+                    aSwitch_305.setClickable(false);
+                    name_305.setText("framework.jar:系统权限(禁止修改)");
+                    item.setChecked(false);
+                }
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -187,6 +250,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     name_305_1.setVisibility(View.GONE);
                 }else{
                     name_305_1.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.switch_1:
+                通用Switch点击操作(this,aSwitch_307_308,"307");
+                通用Switch点击操作(this,aSwitch_307_308,"308");
+                if(!isExist("306")){
+                    tryCreate("306");
                 }
                 break;
         }

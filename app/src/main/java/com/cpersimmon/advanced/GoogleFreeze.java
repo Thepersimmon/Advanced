@@ -55,6 +55,15 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
                 case 1:
                     str=str+str1+f.findName(pkgName[i])+str3;
             }
+        boolean isNull=true;
+        for(int i=0;i<=num-1;i++){
+            if(state.sAppState(pkgName[i])!=-1){
+                isNull=false;
+            }
+        }
+        if(isNull){
+            return "应用详情：\n哦豁，空空如也";
+        }
         //Log.e("重要",str);
         return str;
     }
