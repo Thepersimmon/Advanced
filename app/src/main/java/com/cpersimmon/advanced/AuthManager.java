@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.cpersimmon.advanced.Utils.shellUtils;
+import com.cpersimmon.advanced.Utils.ShellUtils;
 
-import static com.cpersimmon.advanced.Utils.toWork.tryCreate;
-import static com.cpersimmon.advanced.Utils.toWork.tryDelete;
-import static com.cpersimmon.advanced.Utils.toWork.通用Switch点击操作;
-import static com.cpersimmon.advanced.Utils.toWork.isExist;
+import static com.cpersimmon.advanced.Utils.ToWork.tryCreate;
+import static com.cpersimmon.advanced.Utils.ToWork.tryDelete;
+import static com.cpersimmon.advanced.Utils.ToWork.通用Switch点击操作;
+import static com.cpersimmon.advanced.Utils.ToWork.isExist;
 
 public class AuthManager extends AppCompatActivity implements View.OnClickListener{
     TextView t1;
@@ -81,7 +81,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         }
     }
     private boolean 生效问题处理(int i){
-        shellUtils su=new shellUtils();
+        ShellUtils su=new ShellUtils();
         //shellUtils.CommandResult Result=new shellUtils.CommandResult();
         Log.e("测试","OK");
         String str="am kill";
@@ -93,7 +93,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
         String s1=str+str1+str2;
         switch (i){
             case 1:
-                shellUtils.CommandResult Result1=su.execCommand(s1,true,true);
+                ShellUtils.CommandResult Result1=su.execCommand(s1,true,true);
 
                 return (Result1.result==0);
             case 2:
@@ -101,7 +101,7 @@ public class AuthManager extends AppCompatActivity implements View.OnClickListen
                 if(b){
                     tryDelete("403");
                 }
-                shellUtils.CommandResult Result2=su.execCommand(str_0+str1+str3+"\n"+str_1+str1+str3,true,true);
+                ShellUtils.CommandResult Result2=su.execCommand(str_0+str1+str3+"\n"+str_1+str1+str3,true,true);
                 //su.execCommand(str_1+str1+str3,true,true);
                 if(b){
                     tryCreate("403");

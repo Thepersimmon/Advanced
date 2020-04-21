@@ -3,7 +3,6 @@ package com.cpersimmon.advanced;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +11,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cpersimmon.advanced.Utils.appState;
-import com.cpersimmon.advanced.Utils.freezeApp;
-import com.cpersimmon.advanced.Utils.shellUtils;
+import com.cpersimmon.advanced.Utils.AppState;
+import com.cpersimmon.advanced.Utils.FreezeApp;
+import com.cpersimmon.advanced.Utils.ShellUtils;
 
 public class GoogleFreeze extends AppCompatActivity implements View.OnClickListener{
     String pkgName[]={"com.google.android.gms","com.android.vending","com.google.android.gsf",
@@ -29,7 +28,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
 
 
     public void 初始化处理(TextView d1,TextView d2,TextView d3){
-        appState state=new appState(this);
+        AppState state=new AppState(this);
         for(int i=0;i<=9;i++){
             pkgState[i]=state.sAppState(pkgName[i]);
         }
@@ -39,12 +38,12 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
 
     }
     public String 生成描述文字(int num){
-        appState state=new appState(this);
+        AppState state=new AppState(this);
         String str="应用详情：";
         String str1="\n";
         String str2=": 已停用";
         String str3=": 已启用";
-        freezeApp f=new freezeApp(this);
+        FreezeApp f=new FreezeApp(this);
         for(int i=0;i<=num-1;i++)
             switch (state.sAppState(pkgName[i])){
                 case -1:
@@ -67,7 +66,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
         //Log.e("重要",str);
         return str;
     }
-    public void 集中处理findViewByid和点击监听(){
+    public void 集中处理findViewById和点击监听(){
         description1=findViewById(R.id.google_description1);
         description2=findViewById(R.id.google_description2);
         description3=findViewById(R.id.google_description3);
@@ -114,7 +113,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
         //Log.e("重要","1");
         boolean isNeedDo=false;
         for(int i=0;i<=num-1;i++){
-            appState state=new appState(this);
+            AppState state=new AppState(this);
             //确保有应用需要冻结
             if(state.sAppState(pkgName[i])==1) {
                 isNeedDo=true;
@@ -125,7 +124,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "没有应用需要执行此操作", Toast.LENGTH_SHORT).show();
             return;//无应用需要冻结
         }
-        freezeApp w=new freezeApp(this);
+        FreezeApp w=new FreezeApp(this);
         if(!isRoot)
         for(int i=0;i<=num-1;i++){
             //Log.e("重要","无root");
@@ -134,7 +133,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
                 }
         }
         else{
-            shellUtils su=new shellUtils();
+            ShellUtils su=new ShellUtils();
             String str1="pm disable ";
             String str2="\n";
             String str = "";
@@ -153,7 +152,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
         boolean isNeedDo=false;
        // Log.e("重要","开始启用1");
         for(int i=0;i<=num-1;i++){
-            appState state=new appState(this);
+            AppState state=new AppState(this);
             //确保有应用需要冻结
             if(state.sAppState(pkgName[i])==0) {
                 isNeedDo=true;
@@ -165,7 +164,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
            // Log.e("重要","开始启用");
             return;//无应用需要解冻
         }
-        freezeApp w=new freezeApp(this);
+        FreezeApp w=new FreezeApp(this);
         if(!isRoot)
         for(int i=0;i<=num-1;i++){
             //Log.e("重要","无root");
@@ -184,7 +183,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
                     */
         }
         else{
-            shellUtils su=new shellUtils();
+            ShellUtils su=new ShellUtils();
             String str1="pm enable ";
             String str2="\n";
             String str = "";
@@ -204,7 +203,7 @@ public class GoogleFreeze extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_freeze);
-        集中处理findViewByid和点击监听();
+        集中处理findViewById和点击监听();
         初始化处理(description1,description2,description3);
         SharedPreferences settings = getSharedPreferences("data", 0);
         isRoot = settings.getBoolean("isRootOrNot", false);

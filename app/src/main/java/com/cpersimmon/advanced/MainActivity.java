@@ -15,18 +15,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cpersimmon.advanced.Utils.shellUtils;
+import com.cpersimmon.advanced.Utils.ShellUtils;
 import com.maiml.library.BaseItemLayout;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cpersimmon.advanced.Utils.toWork.isExist;
-import static com.cpersimmon.advanced.Utils.toWork.tryCreate;
-import static com.cpersimmon.advanced.Utils.toWork.tryDelete;
-import static com.cpersimmon.advanced.Utils.toWork.说明;
-import static com.cpersimmon.advanced.Utils.toWork.通用Switch点击操作;
+import static com.cpersimmon.advanced.Utils.MultiUserAppManager.isUserExit;
+import static com.cpersimmon.advanced.Utils.ToWork.isExist;
+import static com.cpersimmon.advanced.Utils.ToWork.tryCreate;
+import static com.cpersimmon.advanced.Utils.ToWork.说明;
+import static com.cpersimmon.advanced.Utils.ToWork.通用Switch点击操作;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     Switch aSwitch_101;
@@ -43,30 +44,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Switch aSwitch_307_308;
     BaseItemLayout layout;
     SharedPreferences settings;
-    Boolean shouldRestart;
-
+    boolean shouldRestart;
+    boolean  shouldShowMultiUserGoogleFreeze;
+    boolean  couldShowMultiUserGoogleFreeze;
+    boolean  wantShowMultiUserGoogleFreeze;
+    List<String> valueList = new ArrayList<>();
+    List<Integer> resIdList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        settings = getSharedPreferences("data", 0);
+        wantShowMultiUserGoogleFreeze=settings.getBoolean("wantShowMultiUserGoogleFreeze",false);
+        couldShowMultiUserGoogleFreeze=isUserExit(999);
+        shouldShowMultiUserGoogleFreeze=wantShowMultiUserGoogleFreeze&&couldShowMultiUserGoogleFreeze;
+/*
+        //----------------------------------------------------------------
+        try{
+            Log.e("寻找类","0");
+            Class cls=Class.forName("miui.os.testFind");
+            Log.e("寻找类","1");
+            boolean isOk=cls.getField("isOk").getBoolean(null);
+            Log.e("寻找类","2");
+            if(isOk){
+                Log.e("寻找类","true");
+            }else {
+                Log.e("寻找类","false");
+            }
+        }catch (Exception e){
+            Log.e("寻找类",e.toString());
+        }
+        MultiUserAppManager multiUserAppManager=new MultiUserAppManager(13);
+        if(multiUserAppManager.getMultiUserAppState("com.cpersimmon.freezeapp")==1){
+            //Log.e("多用户","确实存在");
+        }
+        //-------------------------------------------------------------
+
+ */
+
+
         //settings = getSharedPreferences("data", 0);
         //shouldRestart=settings.getBoolean("shouldRestart",true);
         checkPermission();
         说明(this);
         layout= findViewById(R.id.layout);
-        List<String> valueList = new ArrayList<>();
         valueList.add("授权管理：去除权限");
         valueList.add("谷歌冻结");
-        List<Integer> resIdList = new ArrayList<>();
         resIdList.add(R.mipmap.ic_launcher);
         resIdList.add(R.drawable.google_0);
+        if(shouldShowMultiUserGoogleFreeze){
+            valueList.add("谷歌冻结（Xspace）");
+            resIdList.add(R.drawable.google_0);
+        }
 
         layout.setValueList(valueList) // 文字 list
                 .setResIdList(resIdList) // icon list
                 .setArrowResId(R.drawable.right_arrow_black)// 右边的箭头
                 .setArrowIsShow(true) //是否显示右边的箭头
-                .setItemMarginTop(18)  //设置 item的边距（全部）
-                //.setItemMarginTop(10,10) // 设置 某一个item 的边距
+                .setItemMarginTop(10)  //设置 item的边距（全部）
+                .setItemMarginTop(0,18) // 设置 某一个item 的边距
                 .setIconHeight(30)    // icon 的高度
                 .setIconWidth(30)      // icon 的宽度
                 .create();
@@ -80,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case 1:
                         intent = new Intent   (MainActivity.this,GoogleFreeze.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent   (MainActivity.this,MultiUserGoogleFreeze.class);
                         startActivity(intent);
                         break;
                 }
@@ -99,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         aSwitch_404=Switch初始化(R.id.switch_404,"404");
         //
         name_307_308=findViewById(R.id.text_1);
-        name_307_308.setText("framework:破解签名多/少文件");
+        name_307_308.setText("framework.jar:破解签名多/少文件");
         aSwitch_307_308=findViewById(R.id.switch_1);
         aSwitch_307_308.setChecked((!isExist("307"))&&(!isExist("308")));
         aSwitch_307_308.setOnClickListener(this);
@@ -108,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         name_305_1=findViewById(R.id.name_305_1);
         name_305.setOnClickListener(this);
         //系统权限修改设置特别篇
-        aSwitch_305.setClickable(false);
-        name_305.setText("framework.jar:系统权限(禁止修改)");
+        aSwitch_305.setEnabled(false);
+        name_305.setText("framework.jar:系统权限");
         //
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
@@ -123,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         menu.add(2,2,2,"允许修改系统权限");
         menu.findItem(2).setCheckable(true);
         menu.findItem(2).setChecked(false);
+        menu.add(3,3,3,"管理Xspace谷歌应用");
+        menu.findItem(3).setEnabled(couldShowMultiUserGoogleFreeze);
+        menu.findItem(3).setCheckable(true);
+        menu.findItem(3).setChecked(wantShowMultiUserGoogleFreeze);
         //MenuItem item=findViewById(R.id.menu_should_restart);
         //menu.add(0,0,0,"关于作者");
         //menu.add(1,1,1,"是否快速重启");
@@ -136,10 +180,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!shouldRestart) {
             //if(settings.getBoolean("shouldRestart",false))
             menu.findItem(R.id.menu_should_restart).setChecked(false);
-            Log.e("重要信息", "shouldRestart为假");
+            //Log.e("重要信息", "shouldRestart为假");
         }
         else {
-            Log.e("重要信息", "shouldRestart为真");
+            //Log.e("重要信息", "shouldRestart为真");
             menu.findItem(R.id.menu_should_restart).setChecked(true);
         }
         return true;
@@ -174,17 +218,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.menu_should_restart:
                 if(!item.isChecked()){
-                    Log.e("重要信息2","应打开");
+                    //Log.e("重要信息2","应打开");
                     shouldRestart=true;
-                    Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
+                    //Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
                     item.setChecked(true);
                     editor.putBoolean("shouldRestart",true);
                     editor.apply();
                 }
                 else {
-                    Log.e("重要信息2","应关闭");
+                    //Log.e("重要信息2","应关闭");
                     shouldRestart=false;
-                    Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
+                    //Log.e("重要信息", "shouldRestart为"+(shouldRestart?"真":"假"));
                     item.setChecked(false);
                     editor.putBoolean("shouldRestart",false);
                     editor.apply();
@@ -192,19 +236,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 2:
                 if(!item.isChecked()){
-                    aSwitch_305.setClickable(true);
-                    name_305.setText("framework.jar:系统权限(允许修改)");
+                    aSwitch_305.setEnabled(true);
                     item.setChecked(true);
                 }
                 else {
-                    aSwitch_305.setClickable(false);
-                    name_305.setText("framework.jar:系统权限(禁止修改)");
+                    aSwitch_305.setEnabled(false);
                     item.setChecked(false);
+                }
+                break;
+            case 3:
+                if(!item.isChecked()){
+                    editor.putBoolean("wantShowMultiUserGoogleFreeze",true);
+                    editor.apply();
+                    item.setChecked(true);
+                    valueList.add("谷歌冻结（Xspace）");
+                    resIdList.add(R.drawable.google_0);
+                    layout.removeAllViews();
+                    notifyChanged();
+                    //Toast.makeText(this, "此操作需重启该软件生效", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    editor.putBoolean("wantShowMultiUserGoogleFreeze",false);
+                    editor.apply();
+                    item.setChecked(false);
+                    valueList.remove(2);
+                    resIdList.remove(2);
+                    layout.removeAllViews();
+                    notifyChanged();
+                    //Toast.makeText(this, "此操作需重启该软件生效", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void notifyChanged(){
+        layout.setValueList(valueList) // 文字 list
+                .setResIdList(resIdList) // icon list
+                .setArrowResId(R.drawable.right_arrow_black)// 右边的箭头
+                .setArrowIsShow(true) //是否显示右边的箭头
+                .setItemMarginTop(10)  //设置 item的边距（全部）
+                .setItemMarginTop(0,18) // 设置 某一个item 的边距
+                .setIconHeight(30)    // icon 的高度
+                .setIconWidth(30)      // icon 的宽度
+                .create();
     }
 
 
@@ -228,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.switch_305:
                 通用Switch点击操作(this,aSwitch_305,"305");
-                shellUtils su=new shellUtils();
+                ShellUtils su=new ShellUtils();
                 if(shouldRestart) {
                     su.execCommand("am restart", true, true);
                 }
@@ -279,10 +354,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkPermission(){
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Toast.makeText(this, "本软件需要读写外部储存才能使用", Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
         }
     }
 }
